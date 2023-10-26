@@ -1,0 +1,10 @@
+---
+# handlers file for init-totp-data
+
+- name: restart sshd
+  ansible.builtin.service: 
+    name: sshd
+    state: restarted
+
+- name: set permissive selinux
+  ansible.builtin.command: /usr/sbin/setenforce 0

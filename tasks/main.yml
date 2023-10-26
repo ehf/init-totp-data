@@ -1,0 +1,6 @@
+---
+# tasks file for init-totp-data
+
+- import_tasks: enable-totp.yml
+  when: 
+    - enable_totp | bool

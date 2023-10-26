@@ -1,0 +1,13 @@
+---
+# vars file for init-totp-data
+
+epel_repo_base: "https://dl.fedoraproject.org/pub/epel"
+epel_repo_url: "{{ epel_repo_base }}/{{ ansible_distribution_major_version }}/Everything/x86_64/Packages/g"
+epel_repo_gpg_key_url: "{{ epel_repo_base }}/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+google_authenticator_version: "1.07-1"
+google_authenticator_rpm: "{{ epel_repo_url }}/google-authenticator-{{ google_authenticator_version }}.el{{ ansible_distribution_major_version }}.x86_64.rpm"
+
+qrencode_packages:
+  - qrencode
+  - qrencode-libs
+

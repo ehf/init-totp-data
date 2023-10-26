@@ -1,0 +1,81 @@
+---
+
+- ansible.builtin.debug: msg="{{ ansible_distribution_major_version }}"
+
+- name: "selinux in permissive mode"
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive
+  tags:
+    - disable-selinux
+
+- name: "setenforce permissive selinux"
+  ansible.builtin.command: /usr/sbin/setenforce 0
+  when:
+    - ansible_selinux.mode == 'enforcing'
+  tags:
+    - disable-selinux
+
+- ansible.builtin.debug: msg="{{ epel_repo_gpg_key_url }}"
+
+# import via EPEL URL
+- name: "Import EPEL GPG key"
+  ansible.builtin.rpm_key:
+    key: "{{ epel_repo_gpg_key_url }}"
+    state: present
+  register: import_result
+  until: import_result is succeeded
+  retries: 5
+  delay: 10
+  tags:
+    - install-google-auth
+
+# install via EPEL URL
+- name: "Install google-authenticator"
+  ansible.builtin.yum: 
+    name: "{{ google_authenticator_rpm }}"
+    state: present
+  register: install_result
+  until: install_result is succeeded
+  retries: 5
+  delay: 10
+  tags:
+    - install-google-auth
+
+- name: "Install qrencode packages"
+  ansible.builtin.yum:
+    name: "{{ qrencode_packages }}"
+    state: present
+  tags:
+    - install-google-auth
+
+- name: "Deploy updated /etc/ssh/sshd_config"
+  ansible.builtin.template:
+    src: ssh/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+  notify:
+    - restart sshd
+  tags:
+    - deploy-totp-sshd-config
+
+- name: "Deploy updated /etc/pam.d/sshd"
+  ansible.builtin.template:
+    src: pam.d/sshd.j2
+    dest: /etc/pam.d/sshd
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - restart sshd
+  tags:
+    - deploy-totp-pam-sshd
+
+
+
+
+# google-authenticator --secret=/home/$USER/.ssh/totp --time-based --disallow-reuse --rate-limit=3 --rate-time=30 --window-size=3 --step-size=30 --qr-mode=UTF8 --force 

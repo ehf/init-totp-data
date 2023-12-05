@@ -1,0 +1,12 @@
+#!/bin/bash
+
+ldapsearch -x -o ldif_wrap=no  "(&(objectclass=ldapPublicKey)(uid=$1))" | grep '^sshPublicKey' | \
+while read line ; do
+ attribute=`echo $line | awk '{print $1}'`
+ echo $attribute | fgrep '::' > /dev/null 2>&1
+ if [ $? -eq 0 ] ; then
+  echo $line | sed 's/^sshPublicKey:: //' | base64 -i -d -w 0
+ else
+  echo $line | sed 's/^sshPublicKey: //'
+ fi
+done

@@ -1,0 +1,6 @@
+#auth        required                                     pam_env.so
+#auth        required                                     pam_faildelay.so delay=2000000
+#auth        [default=1 ignore=ignore success=ok]         pam_usertype.so isregular
+#auth        [default=1 ignore=ignore success=ok]         pam_localuser.so
+auth        sufficient                                   pam_google_authenticator.so echo_verification_code debug secret=/home/${USER}/.ssh/totp
+auth        required                                     pam_deny.so

@@ -4,8 +4,7 @@
 
 - name: "selinux in permissive mode"
   ansible.posix.selinux:
-    policy: targeted
-    state: permissive
+    state: disabled
   tags:
     - disable-selinux
 
@@ -49,9 +48,21 @@
   tags:
     - install-google-auth
 
+- name: "Deploy /usr/local/sbin/authorized_keys"
+  ansible.builtin.copy:
+    src: authorized_keys
+    dest: /usr/local/sbin/authorized_keys
+    owner: root
+    group: root
+    mode: '0755'
+  notify:
+    - restart sshd
+  tags:
+    - deploy-totp-sshd-config
+
 - name: "Deploy updated /etc/ssh/sshd_config"
   ansible.builtin.template:
-    src: ssh/sshd_config.j2
+    src: ssh/sshd_config.1g.j2
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
@@ -64,7 +75,7 @@
 
 - name: "Deploy updated /etc/pam.d/sshd"
   ansible.builtin.template:
-    src: pam.d/sshd.j2
+    src: pam.d/sshd.1g.j2
     dest: /etc/pam.d/sshd
     owner: root
     group: root
@@ -75,6 +86,18 @@
   tags:
     - deploy-totp-pam-sshd
 
+- name: "Deploy custom /etc/pam.d/totp-auth"
+  ansible.builtin.template:
+    src: pam.d/totp-auth.1g.j2
+    dest: /etc/pam.d/totp-auth
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - restart sshd
+  tags:
+    - deploy-totp-pam-sshd
 
 
 

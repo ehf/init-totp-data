@@ -8,12 +8,12 @@
   tags:
     - disable-selinux
 
-- name: "setenforce permissive selinux"
-  ansible.builtin.command: /usr/sbin/setenforce 0
-  when:
-    - ansible_selinux.mode == 'enforcing'
-  tags:
-    - disable-selinux
+#- name: "setenforce permissive selinux"
+#  ansible.builtin.command: /usr/sbin/setenforce 0
+#  when:
+#    - ansible_selinux.mode == 'enforcing'
+#  tags:
+#    - disable-selinux
 
 - ansible.builtin.debug: msg="{{ epel_repo_gpg_key_url }}"
 

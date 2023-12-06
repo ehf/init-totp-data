@@ -148,5 +148,6 @@ Subsystem	sftp	/usr/libexec/openssh/sftp-server
 
 Match Group mfa_user
     AuthenticationMethods publickey,keyboard-interactive:pam
-    AuthorizedKeysCommand /usr/local/sbin/authorized_keys
+    AuthorizedKeysCommand /usr/local/sbin/authorized_keys %u
+    AuthorizedKeysCommandUser nobody
     AuthorizedKeysFile none

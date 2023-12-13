@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ldapsearch -x -o ldif_wrap=no  "(&(objectclass=ldapPublicKey)(uid=$1))" | grep '^sshPublicKey' | \
+ldapsearch -x -o ldif-wrap=no  "(&(objectclass=ldapPublicKey)(uid=$1))" | grep '^sshPublicKey' | \
 while read line ; do
  attribute=`echo $line | awk '{print $1}'`
  echo $attribute | fgrep '::' > /dev/null 2>&1

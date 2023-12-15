@@ -6,5 +6,10 @@
     name: sshd
     state: restarted
 
+- name: restart sssd
+  ansible.builtin.service: 
+    name: sssd
+    state: restarted
+
 - name: set permissive selinux
   ansible.builtin.command: /usr/sbin/setenforce 0

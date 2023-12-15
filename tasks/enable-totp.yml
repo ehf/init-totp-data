@@ -70,6 +70,7 @@
     backup: yes
   notify:
     - restart sshd
+    - restart sssd
   tags:
     - deploy-totp-sshd-config
 
